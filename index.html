@@ -12,22 +12,14 @@
 /* Layout: neo-brutalist "control panel" — sticky button nav, oversized display type,
    bordered paper cards on a peach ground with hard offset shadows, riso-style canvas art per card. */
 :root{
-  --bg:#fde2cb; --paper:#fff6ec; --ink:#15131c; --text:#15131c; --muted:#5d4b3f; --rule:#e3c1a3;
-  --blue:#1d3ae6; --on-blue:#ffffff; --orange:#ff5b1e; --on-orange:#15131c; --yellow:#ffd21f; --on-yellow:#15131c;
+  /* dark theme only */
+  --bg:#16141c; --paper:#221f2a; --ink:#f3e3cc; --text:#f3e3cc; --muted:#b9a894; --rule:#3b3545;
+  --blue:#4a63ff; --on-blue:#ffffff; --orange:#ff6a2e; --on-orange:#15131c; --yellow:#ffd21f; --on-yellow:#15131c;
   --f-display:"Archivo Black","Arial Black",Impact,sans-serif;
   --f-body:"Archivo","Helvetica Neue",Arial,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --bw:3px;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#16141c; --paper:#221f2a; --ink:#f3e3cc; --text:#f3e3cc; --muted:#b9a894; --rule:#3b3545;
-    --blue:#4a63ff; --orange:#ff6a2e; --yellow:#ffd21f; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#16141c; --paper:#221f2a; --ink:#f3e3cc; --text:#f3e3cc; --muted:#b9a894; --rule:#3b3545;
-  --blue:#4a63ff; --orange:#ff6a2e; --yellow:#ffd21f; color-scheme:dark;
+  color-scheme:dark;
 }
 
 *{box-sizing:border-box}
