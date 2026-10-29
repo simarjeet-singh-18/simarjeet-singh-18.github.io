@@ -368,6 +368,11 @@ const WORK = [
    meta:ADV,
    desc:"Studies how additive methods such as LoRA, DoRA and UniLoRA perform when fused with subtractive fine-tuning methods, including SFT and our own method, on downstream tasks.",
    tags:["LoRA","DoRA","UniLoRA"]},
+  {art:"magnet", type:"research", area:"physics", tag:"R", status:"Ongoing",
+   kicker:"Research · MagNet Challenge 2", title:"Frequency-Agnostic Transformer Modeling of Power Magnetics",
+   meta:"Advisors: Prof. A. M. Tripathi (IIT Dharwad) · Prof. S. Boggavarapu (IIT Dharwad)",
+   desc:"Developed a frequency-agnostic Transformer model of magnetic hysteresis that distils seven frequency-specific teacher models into a single student, for the ferrite 3C92 across 50–800 kHz excitations.",
+   tags:["Transformers","Knowledge distillation","Power magnetics"]},
   {art:"vqa", type:"research", area:"datasets", tag:"R", status:"Completed",
    kicker:"Research · Dataset", title:"Visual-only Question Answering Dataset",
    meta:"Advisor: Prof. A. M. Tripathi (IIT Dharwad)",
@@ -943,6 +948,47 @@ const ART = {
     g.strokeStyle = C.orange; g.lineWidth = 1.5; g.beginPath(); g.moveTo(cx + 9*k, cy - 9*k); g.lineTo(ox + ow*.2, oy + oh*.35); g.stroke();
     label(g, ox, oy - 21, "OBSTACLE", C.orange);
     label(g, w*.05, h - 24, "1D LiDAR · PAN / TILT", C.cream);
+  },
+  magnet(g,w,h,r){
+    bg(g,w,h,C.navy,"#323879",18);
+    // B–H hysteresis loop: upper branch on the way down, lower branch on the way up
+    const loop = (cx, cy, sx, sy, hc, wd) => {
+      const pts = [], n = 40;
+      for (let i = 0; i <= n; i++){ const H = 1 - 2*i/n; pts.push([cx + H*sx, cy - Math.tanh((H + hc)/wd)*sy]); }
+      for (let i = 0; i <= n; i++){ const H = -1 + 2*i/n; pts.push([cx + H*sx, cy - Math.tanh((H - hc)/wd)*sy]); }
+      g.beginPath(); g.moveTo(...pts[0]); pts.slice(1).forEach(p => g.lineTo(...p)); g.closePath();
+    };
+    // seven frequency-specific teachers (loops widen as frequency rises)
+    const gx = w*.05, gy = h*.24, cw = w*.13, ch = h*.13, gap = 5, cols = [C.teal, C.blue2, C.pink, C.cream];
+    for (let i = 0; i < 7; i++){
+      const x = gx + (i % 2)*(cw + gap), y = gy + Math.floor(i/2)*(ch + gap);
+      box(g, x, y, cw, ch, C.deep, 1.5);
+      loop(x + cw/2, y + ch/2, cw*.38, ch*.36, .08 + i*.045, .25);
+      g.strokeStyle = cols[i % 4]; g.lineWidth = 1.5; g.stroke();
+    }
+    label(g, gx, gy + 4*(ch + gap) + 2, "7 TEACHERS", C.cream);
+    // distillation into one Transformer student
+    const tx = w*.39, tw = w*.13, ty = h*.3, th = h*.42, gxR = gx + 2*cw + gap;
+    g.setLineDash([5,4]); g.strokeStyle = C.cream; g.lineWidth = 1.5; g.beginPath();
+    for (let k = 0; k < 4; k++){ const yy = gy + k*(ch + gap) + ch/2; g.moveTo(gxR + 4, yy); g.quadraticCurveTo(tx - 12, yy, tx - 6, ty + th/2); }
+    g.stroke(); g.setLineDash([]);
+    g.fillStyle = C.cream; g.beginPath(); g.moveTo(tx - 1, ty + th/2); g.lineTo(tx - 10, ty + th/2 - 5); g.lineTo(tx - 10, ty + th/2 + 5); g.closePath(); g.fill();
+    for (let k = 0; k < 3; k++){
+      const y = ty + k*th/3;
+      box(g, tx, y + 2, tw, th/3 - 4, k === 1 ? C.orange : C.blue2, 2);
+      g.fillStyle = k === 1 ? C.ink : C.cream;
+      for (let d = 0; d < 4; d++){ g.beginPath(); g.arc(tx + tw*(.2 + d*.2), y + th/6, 2.2, 0, 7); g.fill(); }
+    }
+    label(g, tx - 4, ty + th + 6, "STUDENT", C.orange);
+    // the single model's B–H plot
+    const px = w*.6, pw = w*.35, py = h*.3, ph = h*.5, cx = px + pw/2, cy = py + ph/2;
+    g.strokeStyle = "rgba(244,231,210,.6)"; g.lineWidth = 1.5; g.beginPath();
+    g.moveTo(px, cy); g.lineTo(px + pw, cy); g.moveTo(cx, py); g.lineTo(cx, py + ph); g.stroke();
+    for (let i = 0; i < 7; i++){ loop(cx, cy, pw*.42, ph*.4, .08 + i*.045, .25); g.strokeStyle = "rgba(244,231,210,.18)"; g.lineWidth = 1; g.stroke(); }
+    loop(cx, cy, pw*.42, ph*.4, .2, .25); g.strokeStyle = C.ink; g.lineWidth = 5; g.stroke(); g.strokeStyle = C.orange; g.lineWidth = 3; g.stroke();
+    g.fillStyle = C.cream; g.font = '700 11px "JetBrains Mono", monospace'; g.textBaseline = "alphabetic";
+    g.fillText("B", cx + 5, py + 10); g.fillText("H", px + pw - 9, cy - 5);
+    label(g, px, py + ph + 6, "3C92 · 50–800 kHz", C.cream);
   },
   game(g,w,h,r){
     const p = Math.max(4, Math.round(w/64));
